@@ -70,7 +70,7 @@ const Component = () => {
 ```
 
 > **You don't need to think too much** - it's easy, look:<br />
-> - define events with payloads with `events()`<br />
+> - define events with payloads using `events()`<br />
 > - wrap the components tree with the generated `EventProvider`<br />
 > - listen on events with **useEvent hook**
 > - dispatch events with **useEvent hook**
