@@ -93,7 +93,7 @@ dispatchEvent('buttonClicked', "Alice")
 > Library is completely type safe <br/>
 > so Linter will inform you when you use wrong payload anywhere
 
-### Default payload
+#### Default payload
 When you don't need the payload and want some default object, you can omit middleware parameters.
 ```jsx
 const [EventProvider, useEvent] = events({
