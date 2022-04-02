@@ -117,6 +117,21 @@ const Component = () => {
 }
 ```
 
+#### Middleware helpers
+Are you an aesthete? <br />
+Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `justEvent`.
+
+```tsx
+const [EventProvider, useEvent] = events({
+  userLogged: withPayload<{ id: number}>(),
+  homeVisited: justEvent,
+  buttonClicked: withDefault({ type: 'userButton' })
+})
+```
+
+> NOTE:
+> `withPayload` does the call with `()`. If you forget about it, your payload will be the function 🤡
+
 ## 👉 Rerendering
 Neither listeners nor event dispatching rerender the component.<br />
 The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
@@ -133,6 +148,8 @@ const Component = () => {
   // ...
 }
 ```
+
+
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
