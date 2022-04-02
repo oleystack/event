@@ -31,7 +31,7 @@ import { events } from '@bit-about/event'
 
 const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => payload,
-  // ... and other events
+  // ...and other events
 })
 ```
 
