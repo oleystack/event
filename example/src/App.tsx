@@ -1,12 +1,18 @@
 import React, { useRef } from 'react'
-import { events } from '@bit-about/event'
+import { events, justEvent, withDefault, withPayload } from '@bit-about/event'
 
 /**
  * Declaring EVENTS
  */
+// const [EventProvider, useEvent] = events({
+//   buttonClicked: (randomNumber: number) => `randomNumber:${randomNumber}`,
+//   idle: () => 'defaultValue'
+// })
+
 const [EventProvider, useEvent] = events({
-  buttonClicked: (randomNumber: number) => `randomNumber:${randomNumber}`,
-  idle: () => 'defaultValue'
+  userLogged: withPayload<{ id: number}>(),
+  homeVisited: justEvent,
+  buttonClicked: withDefault({ type: 'userButton' })
 })
 
 /**
