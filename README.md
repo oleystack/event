@@ -129,7 +129,8 @@ const Component = () => {
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
-Move you bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+
 Now you've got **completely type-safe side-effects**, isn't cool?
 
 ```tsx
