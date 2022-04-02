@@ -86,15 +86,11 @@ const [EventProvider, useEvent] = events({
 ```
 
 ```jsx
-const Component = () => {
-  const dispatchEvent = useEvent({
-    buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
-  })
+const dispatchEvent = useEvent({
+  buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
+})
 
-  dispatchEvent('buttonClicked', "Alice")
-  
-  // ...
-}
+dispatchEvent('buttonClicked', "Alice")
 ```
 
 > NOTE: <br />
@@ -107,16 +103,14 @@ When you don't need the payload and want some default object, you can omit middl
 const [EventProvider, useEvent] = events({
   buttonClicked: () => `Bob!`,
 })
+```
 
-const Component = () => {
-  const dispatchEvent = useEvent({
-    buttonClicked: (payload: string) => console.log(payload) // "Bob!"
-  })
+```jsx
+const dispatchEvent = useEvent({
+  buttonClicked: (payload: string) => console.log(payload) // "Bob!"
+})
 
-  dispatchEvent('buttonClicked')
-  
-  // ...
-}
+dispatchEvent('buttonClicked')
 ```
 
 #### Middleware helpers
