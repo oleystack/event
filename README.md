@@ -47,6 +47,15 @@ const App = () => (
 Listen and dispatch your defined event in type-safe manner
 
 ```jsx
+const Button = () => {
+  const dispatchEvent = useEvent()
+  
+  // 🗣️ Dispatch events
+  const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
+  
+  return <button onClick={onButtonClick}>Call event</button>
+}
+
 const Component = () => {
   const [message, setMessage] = React.useState("")
 
@@ -56,15 +65,6 @@ const Component = () => {
   })
   
   return <p>{message}</p>
-}
-
-const Button = () => {
-  const dispatchEvent = useEvent()
-  
-  // 🗣️ Dispatch events
-  const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
-  
-  return <button onClick={onButtonClick}>Call event</button>
 }
 ```
 
