@@ -55,7 +55,8 @@ const Button = () => {
   
   return <button onClick={onButtonClick}>Call event</button>
 }
-
+```
+```jsx
 const Component = () => {
   const [message, setMessage] = React.useState("")
 
