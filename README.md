@@ -123,7 +123,7 @@ Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `justEvent`
 
 ```tsx
 const [EventProvider, useEvent] = events({
-  userLogged: withPayload<{ id: number}>(),
+  userLogged: withPayload<{ id: number }>(),
   homeVisited: justEvent,
   buttonClicked: withDefault({ type: 'userButton' })
 })
