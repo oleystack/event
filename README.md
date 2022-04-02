@@ -142,7 +142,8 @@ const [AuthProvider, useAuth] = state(
     const [user, setUser] = React.useState<User>(null)
     
     useEvent({
-      userLogged: (user: User) => setUser(user)
+      userLogged: (user: User) => setUser(user),
+      userLoggout: () => setUser(null)
     })
     
     return { user }
