@@ -83,7 +83,9 @@ Events in `events()` are actually payload middlewares.
 const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => `Hello ${message}!`,
 })
+```
 
+```jsx
 const Component = () => {
   const dispatchEvent = useEvent({
     buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
