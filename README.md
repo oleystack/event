@@ -82,11 +82,15 @@ const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => `Hello ${message}!`,
 })
 
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
-})
+const Component = () => {
+  const dispatchEvent = useEvent({
+    buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
+  })
 
-dispatchEvent('buttonClicked', "Alice")
+  dispatchEvent('buttonClicked', "Alice")
+  
+  // ...
+}
 ```
 
 > NOTE: <br />
@@ -100,11 +104,15 @@ const [EventProvider, useEvent] = events({
   buttonClicked: () => `Bob!`,
 })
 
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Bob!"
-})
+const Component = () => {
+  const dispatchEvent = useEvent({
+    buttonClicked: (payload: string) => console.log(payload) // "Bob!"
+  })
 
-dispatchEvent('buttonClicked')
+  dispatchEvent('buttonClicked')
+  
+  // ...
+}
 ```
 
 ## 👉 Rerendering
