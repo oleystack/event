@@ -31,7 +31,8 @@ import { events } from '@bit-about/event'
 
 const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => payload,
-  // ...and other events
+  userLogged: () => {},
+  modalClosed: () => {},
 })
 ```
 
@@ -95,7 +96,7 @@ const Component = () => {
 ```
 
 > NOTE: <br />
-> Library is completely type safe <br/>
+> The library is completely type safe <br/>
 > so Linter will inform you when you use wrong payload anywhere
 
 #### Default payload
@@ -133,9 +134,6 @@ const Component = () => {
 }
 ```
 
-> NOTE:<br />
-> **Values** in objects and arrays created on the fly are shallow compared.
-
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
 Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
@@ -172,7 +170,7 @@ MIT © [Maciej Olejnik 🇵🇱](https://github.com/Gareneye)
 
 ## Support me
 If you use my library and you like it...<br />
-it would be nice if you put the name `BitAboutState` in the work experience section of your resume.<br />
+it would be nice if you put the name `BitAboutEvent` in the work experience section of your resume.<br />
 Thanks 🙇🏻! 
 
 ---
