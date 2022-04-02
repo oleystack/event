@@ -4,7 +4,7 @@
 <img alt="Bundle size" src="https://img.shields.io/bundlephobia/min/@bit-about/state?label=size" />
 <a href="https://codecov.io/gh/bit-about/state"><img alt="" src="https://codecov.io/gh/bit-about/state/branch/main/graph/badge.svg?token=BuGi92VqnL" /></a>
 <br />
-💫 Tiny and powerful hook-basek event system for React.<br />
+💫 Tiny and powerful hook-based event system for React.<br />
 100% Idiomatic React.<br />
 </p>
 
@@ -31,7 +31,8 @@ import { events } from '@bit-about/event'
 
 const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => payload,
-  // ... and other events
+  userLogged: () => {},
+  modalClosed: () => {},
 })
 ```
 
@@ -47,6 +48,16 @@ const App = () => (
 Listen and dispatch your defined event in type-safe manner
 
 ```jsx
+const Button = () => {
+  const dispatchEvent = useEvent()
+  
+  // 🗣️ Dispatch events
+  const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
+  
+  return <button onClick={onButtonClick}>Call event</button>
+}
+```
+```jsx
 const Component = () => {
   const [message, setMessage] = React.useState("")
 
@@ -57,19 +68,10 @@ const Component = () => {
   
   return <p>{message}</p>
 }
-
-const Button = () => {
-  const dispatchEvent = useEvent()
-  
-  // 🗣️ Dispatch events
-  const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
-  
-  return <button onClick={onButtonClick}>Call event</button>
-}
 ```
 
 > **You don't need to think too much** - it's easy, look:<br />
-> - define events with payloads with `events()`<br />
+> - define events with payloads using `events()`<br />
 > - wrap the components tree with the generated `EventProvider`<br />
 > - listen on events with **useEvent hook**
 > - dispatch events with **useEvent hook**
@@ -82,30 +84,53 @@ const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => `Hello ${message}!`,
 })
 
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
-})
+const Component = () => {
+  const dispatchEvent = useEvent({
+    buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
+  })
 
-dispatchEvent('buttonClicked', "Alice")
+  dispatchEvent('buttonClicked', "Alice")
+  
+  // ...
+}
 ```
 
 > NOTE: <br />
-> Library is completely type safe <br/>
+> The library is completely type safe <br/>
 > so Linter will inform you when you use wrong payload anywhere
 
-### Default payload
+#### Default payload
 When you don't need the payload and want some default object, you can omit middleware parameters.
 ```jsx
 const [EventProvider, useEvent] = events({
   buttonClicked: () => `Bob!`,
 })
 
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Bob!"
-})
+const Component = () => {
+  const dispatchEvent = useEvent({
+    buttonClicked: (payload: string) => console.log(payload) // "Bob!"
+  })
 
-dispatchEvent('buttonClicked')
+  dispatchEvent('buttonClicked')
+  
+  // ...
+}
 ```
+
+#### Middleware helpers
+Are you an aesthete? <br />
+Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `justEvent`.
+
+```tsx
+const [EventProvider, useEvent] = events({
+  userLogged: withPayload<{ id: number}>(),
+  homeVisited: justEvent,
+  buttonClicked: withDefault({ type: 'userButton' })
+})
+```
+
+> NOTE:
+> `withPayload` does the call with `()`. If you forget about it, your payload will be the function 🤡
 
 ## 👉 Rerendering
 Neither listeners nor event dispatching rerender the component.<br />
@@ -124,12 +149,12 @@ const Component = () => {
 }
 ```
 
-> NOTE:<br />
-> **Values** in objects and arrays created on the fly are shallow compared.
+
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
-Move you bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+
 Now you've got **completely type-safe side-effects**, isn't cool?
 
 ```tsx
@@ -141,7 +166,8 @@ const [AuthProvider, useAuth] = state(
     const [user, setUser] = React.useState<User>(null)
     
     useEvent({
-      userLogged: (user: User) => setUser(user)
+      userLogged: (user: User) => setUser(user),
+      userLoggout: () => setUser(null)
     })
     
     return { user }
@@ -161,7 +187,7 @@ MIT © [Maciej Olejnik 🇵🇱](https://github.com/Gareneye)
 
 ## Support me
 If you use my library and you like it...<br />
-it would be nice if you put the name `BitAboutState` in the work experience section of your resume.<br />
+it would be nice if you put the name `BitAboutEvent` in the work experience section of your resume.<br />
 Thanks 🙇🏻! 
 
 ---
