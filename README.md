@@ -115,12 +115,12 @@ dispatchEvent('buttonClicked')
 
 #### Middleware helpers
 Are you an aesthete? <br />
-Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `justEvent`.
+Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `withNothing`.
 
 ```tsx
 const [EventProvider, useEvent] = events({
   userLogged: withPayload<{ id: number }>(),
-  homeVisited: justEvent,
+  homeVisited: withNothing,
   buttonClicked: withDefault({ type: 'userButton' })
 })
 ```
