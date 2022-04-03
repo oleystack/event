@@ -137,8 +137,8 @@ const Component = () => {
   const [message, setMessage] = React.useState("")
 
   useEvent({
-    aliceClicked: (payload: string) => console.log("I DON'T rerender this component!"),
-    bobClicked: (payload: string) => setMessage("I DO rerender this component!")
+    aliceClicked: () => console.log("I DON'T rerender this component!"),
+    bobClicked: () => setMessage("I DO rerender this component!")
   })
   
   // ...
@@ -159,7 +159,7 @@ import { useEvent } from './user-events'
 
 const [AuthProvider, useAuth] = state(
   () => {
-    const [user, setUser] = React.useState<User>(null)
+    const [user, setUser] = React.useState<User | null>(null)
     
     useEvent({
       userLogged: (user: User) => setUser(user),
