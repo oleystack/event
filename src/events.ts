@@ -43,7 +43,7 @@ export default function events<
   type ListenerRegistry = {
     [key in keyof Partial<Registry>]: EventListener<ReturnType<Registry[key]>>
   }
-  const useEvent = (eventListeners: ListenerRegistry) => {
+  const useEvent = (eventListeners?: ListenerRegistry) => {
     const contextValue = React.useContext(
       context as unknown as Context<ContextValue<EventTuple>>
     )
@@ -65,7 +65,7 @@ export default function events<
     // EventListener caller
     const update = React.useCallback(
       ({ event }: EventTuple) => {
-        eventListeners[event.type]?.(middlewares[event.type](event.payload))
+        eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
       },
       [context, eventListeners]
     )
