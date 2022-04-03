@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { events, justEvent, withDefault, withPayload } from '@bit-about/event'
+import { events, withNothing, withDefault, withPayload } from '@bit-about/event'
 
 /**
  * Declaring EVENTS
@@ -11,8 +11,8 @@ import { events, justEvent, withDefault, withPayload } from '@bit-about/event'
 
 const [EventProvider, useEvent] = events({
   userLogged: withPayload<{ id: number}>(),
-  homeVisited: justEvent,
-  buttonClicked: withDefault({ type: 'userButton' })
+  homeVisited: withNothing,
+  buttonClicked: withDefault('asd')
 })
 
 /**
