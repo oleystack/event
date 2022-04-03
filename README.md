@@ -83,21 +83,19 @@ Events in `events()` are actually payload middlewares.
 const [EventProvider, useEvent] = events({
   buttonClicked: (payload: string) => `Hello ${message}!`,
 })
+```
 
-const Component = () => {
-  const dispatchEvent = useEvent({
-    buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
-  })
+```jsx
+const dispatchEvent = useEvent({
+  buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
+})
 
-  dispatchEvent('buttonClicked', "Alice")
-  
-  // ...
-}
+dispatchEvent('buttonClicked', "Alice")
 ```
 
 > NOTE: <br />
 > The library is completely type safe <br/>
-> so Linter will inform you when you use wrong payload anywhere
+> so Typescript will inform you when you use wrong payload anywhere
 
 #### Default payload
 When you don't need the payload and want some default object, you can omit middleware parameters.
@@ -105,16 +103,14 @@ When you don't need the payload and want some default object, you can omit middl
 const [EventProvider, useEvent] = events({
   buttonClicked: () => `Bob!`,
 })
+```
 
-const Component = () => {
-  const dispatchEvent = useEvent({
-    buttonClicked: (payload: string) => console.log(payload) // "Bob!"
-  })
+```jsx
+const dispatchEvent = useEvent({
+  buttonClicked: (payload: string) => console.log(payload) // "Bob!"
+})
 
-  dispatchEvent('buttonClicked')
-  
-  // ...
-}
+dispatchEvent('buttonClicked')
 ```
 
 #### Middleware helpers
@@ -123,7 +119,7 @@ Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `justEvent`
 
 ```tsx
 const [EventProvider, useEvent] = events({
-  userLogged: withPayload<{ id: number}>(),
+  userLogged: withPayload<{ id: number }>(),
   homeVisited: justEvent,
   buttonClicked: withDefault({ type: 'userButton' })
 })
