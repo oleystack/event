@@ -23,6 +23,7 @@ export default function events<
   Middleware extends EventMiddleware<any, any>,
   Registry extends EventRegistry<Key, Middleware>
 >(middlewares: Registry) {
+  const dispatcher: { current: EventTuple['setEvent'] } = { current: () => {} }
   const contextListeners: ContextListener<EventTuple>[] = []
   const context = createContext<EventTuple>(contextListeners, EVENT_TUPLE_NULL)
 
@@ -32,6 +33,7 @@ export default function events<
   const BindProvider: React.FC = ({ children }) => {
     // setEvent is never updated
     const [event, setEvent] = React.useState<EventState>(EVENT_STATE_NULL)
+    dispatcher.current = setEvent
 
     // To prevent in-place creating EventTuple
     const state = React.useMemo(() => ({ event, setEvent }), [event])
@@ -78,6 +80,8 @@ export default function events<
       }
     }, [listeners])
 
+    /* eslint-disable indent */
+
     /**
      * Dispatcher
      * @param event
@@ -87,9 +91,9 @@ export default function events<
       K extends keyof Registry,
       P extends Parameters<Registry[K]>[0]
     >(
-        event: K,
-        ...payload: P extends undefined ? [] : [P]
-      ): void => {
+      event: K,
+      ...payload: P extends undefined ? [] : [P]
+    ): void => {
       setEvent({ type: event, payload })
     }
 
@@ -116,5 +120,20 @@ export default function events<
     return { unsubscribe }
   }
 
-  return [BindProvider, useEvent, subscribe] as const
+  /**
+   * Dispatcher
+   * @param event
+   * @param payload
+   */
+  const dispatch = <
+    K extends keyof Registry,
+    P extends Parameters<Registry[K]>
+  >(
+    event: K,
+    ...payload: P extends undefined ? [] : [P]
+  ): void => {
+    dispatcher.current({ type: event, payload })
+  }
+
+  return [BindProvider, useEvent, { subscribe, dispatch }] as const
 }
