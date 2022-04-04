@@ -39,12 +39,15 @@ export default function events<
     return React.createElement(context.Provider, { value: state }, children)
   }
 
-  /**
-   * useEvent hook
-   */
   type ListenerRegistry = {
     [key in keyof Partial<Registry>]: EventListener<ReturnType<Registry[key]>>
   }
+
+  /**
+   * useEvent hook
+   * @param eventListeners List of subscribed events
+   * @returns Dispatch function
+   */
   const useEvent = (eventListeners?: ListenerRegistry) => {
     const contextValue = React.useContext(
       context as unknown as Context<ContextValue<EventTuple>>
@@ -93,6 +96,11 @@ export default function events<
     return dispatch
   }
 
+  /**
+   * Subscriber for non-hook aproaches
+   * @param eventListeners List of subscribed events
+   * @returns Subscriber with unsubscribe method
+   */
   const subscribe = (eventListeners: ListenerRegistry) => {
     const subscriber: ContextListener<EventTuple> = ({ event }) => {
       eventListeners?.[event.type]?.(middlewares[event.type](event.payload))

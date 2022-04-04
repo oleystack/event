@@ -24,6 +24,7 @@ export type ContextListener<Value> = (payload: Readonly<Value>) => void;
 
 export type Context<Value> = React.Context<Value> & {
   Provider: Provider<React.ProviderProps<Value>>
+
   // We don't support Consumer API
   Consumer: never
 }
