@@ -14,8 +14,12 @@ import {
   EventDispatcher
 } from './types'
 
-const EVENT_STATE_NULL: EventState = { type: '', payload: {} } // todo: params listeners
-const EVENT_DISPATCHED_NULL: EventDispatcher = () => {}
+const EVENT_STATE_NULL: EventState = { type: '_init', payload: {} } // todo: params listeners
+const EVENT_DISPATCHED_NULL: EventDispatcher = () => {
+  if (isDev) {
+    console.warn('Tried to dispatch event without Provider')
+  }
+}
 const EVENT_TUPLE_NULL: EventTuple = {
   event: EVENT_STATE_NULL,
   setEvent: () => {}
@@ -66,6 +70,8 @@ export default function events<
    * @returns Dispatch function
    */
   const useEvent = (eventListeners?: ListenerRegistry) => {
+    checkIfMounted()
+
     const contextValue = React.useContext(
       context as unknown as Context<ContextValue<EventTuple>>
     )
@@ -76,8 +82,6 @@ export default function events<
       },
       listeners
     } = contextValue
-
-    checkIfMounted()
 
     // EventListener caller
     const update = React.useCallback(
