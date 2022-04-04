@@ -93,5 +93,20 @@ export default function events<
     return dispatch
   }
 
-  return [BindProvider, useEvent] as const
+  const subscribe = (eventListeners: ListenerRegistry) => {
+    const subscriber: ContextListener<EventTuple> = ({ event }) => {
+      eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
+    }
+
+    contextListeners.push(subscriber)
+
+    const unsubscribe = () => {
+      const index = contextListeners.indexOf(subscriber)
+      contextListeners.splice(index, 1)
+    }
+
+    return { unsubscribe }
+  }
+
+  return [BindProvider, useEvent, subscribe] as const
 }
