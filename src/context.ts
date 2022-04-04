@@ -3,7 +3,7 @@ import {
   unstable_NormalPriority as NormalPriority,
   unstable_runWithPriority as runWithPriority
 } from 'scheduler'
-import { Context, ContextValue } from './types'
+import { Context, ContextListener, ContextValue } from './types'
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -16,14 +16,12 @@ export const useIsomorphicLayoutEffect: typeof React.useEffect = canUseDOM()
   : React.useEffect
 
 const createProvider = <Value>(
+  listeners: ContextListener<Value>[],
   Original: React.Provider<ContextValue<Value>>
 ) => {
   const Provider: React.FC<React.ProviderProps<Value>> = (props) => {
     // Holds an actual "props.value"
     const valueRef = React.useRef(props.value)
-
-    // Holds provider check flag
-    const hasProviderRef = React.useRef(false)
 
     // A stable object, is used to avoid context updates via mutation of its values.
     const contextValue = React.useRef<ContextValue<Value>>()
@@ -31,15 +29,13 @@ const createProvider = <Value>(
     if (!contextValue.current) {
       contextValue.current = {
         value: valueRef,
-        hasProvider: hasProviderRef,
-        listeners: []
+        listeners
       }
     }
 
     // Todo: test if initialization call listeners somehow
     useIsomorphicLayoutEffect(() => {
       valueRef.current = props.value
-      hasProviderRef.current = true
 
       runWithPriority(NormalPriority, () => {
         ;(contextValue.current as ContextValue<Value>).listeners.forEach(
@@ -64,14 +60,13 @@ const createProvider = <Value>(
   return Provider as unknown as React.Provider<ContextValue<Value>>
 }
 
-export const createContext = <Value>(defaultValue: Value): Context<Value> => {
+export const createContext = <Value>(listeners: ContextListener<Value>[], defaultValue: Value): Context<Value> => {
   const context = React.createContext<ContextValue<Value>>({
     value: { current: defaultValue },
-    hasProvider: { current: false },
-    listeners: []
+    listeners
   })
 
-  context.Provider = createProvider<Value>(context.Provider)
+  context.Provider = createProvider<Value>(listeners, context.Provider)
 
   // We don't support Consumer API
   delete (context as unknown as Context<Value>).Consumer

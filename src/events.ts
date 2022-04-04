@@ -8,7 +8,8 @@ import {
   EventRegistry,
   EventState,
   EventTuple,
-  EventListener
+  EventListener,
+  ContextListener
 } from './types'
 
 const EVENT_STATE_NULL: EventState = { type: '', payload: {} }
@@ -19,10 +20,11 @@ const EVENT_TUPLE_NULL: EventTuple = {
 
 export default function events<
   Key extends EventKey,
-  Middleware extends EventMiddleware,
+  Middleware extends EventMiddleware<any, any>,
   Registry extends EventRegistry<Key, Middleware>
 >(middlewares: Registry) {
-  const context = createContext<EventTuple>(EVENT_TUPLE_NULL)
+  const contextListeners: ContextListener<EventTuple>[] = []
+  const context = createContext<EventTuple>(contextListeners, EVENT_TUPLE_NULL)
 
   /**
    * Provider
@@ -52,15 +54,8 @@ export default function events<
       value: {
         current: { setEvent }
       },
-      hasProvider: { current: hasProvider },
       listeners
     } = contextValue
-
-    if (!hasProvider) {
-      console.warn(
-        'The Events System hook must be used in component wrapped with its corresponding EventsProvider'
-      )
-    }
 
     // EventListener caller
     const update = React.useCallback(
