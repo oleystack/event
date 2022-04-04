@@ -3,13 +3,8 @@ import {
   unstable_NormalPriority as NormalPriority,
   unstable_runWithPriority as runWithPriority
 } from 'scheduler'
+import { canUseDOM, isDev } from './common'
 import { Context, ContextListener, ContextValue } from './types'
-
-const isDev = process.env.NODE_ENV !== 'production'
-
-const canUseDOM = (): boolean =>
-  typeof window !== 'undefined' &&
-  !!(window.document && window.document.createElement)
 
 export const useIsomorphicLayoutEffect: typeof React.useEffect = canUseDOM()
   ? React.useLayoutEffect
@@ -60,7 +55,10 @@ const createProvider = <Value>(
   return Provider as unknown as React.Provider<ContextValue<Value>>
 }
 
-export const createContext = <Value>(listeners: ContextListener<Value>[], defaultValue: Value): Context<Value> => {
+export const createContext = <Value>(
+  listeners: ContextListener<Value>[],
+  defaultValue: Value
+): Context<Value> => {
   const context = React.createContext<ContextValue<Value>>({
     value: { current: defaultValue },
     listeners

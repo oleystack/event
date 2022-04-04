@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { isDev } from './common'
 import { createContext, useIsomorphicLayoutEffect } from './context'
 import {
   Context,
@@ -9,10 +10,12 @@ import {
   EventState,
   EventTuple,
   EventListener,
-  ContextListener
+  ContextListener,
+  EventDispatcher
 } from './types'
 
-const EVENT_STATE_NULL: EventState = { type: '', payload: {} }
+const EVENT_STATE_NULL: EventState = { type: '', payload: {} } // todo: params listeners
+const EVENT_DISPATCHED_NULL: EventDispatcher = () => {}
 const EVENT_TUPLE_NULL: EventTuple = {
   event: EVENT_STATE_NULL,
   setEvent: () => {}
@@ -23,9 +26,21 @@ export default function events<
   Middleware extends EventMiddleware<any, any>,
   Registry extends EventRegistry<Key, Middleware>
 >(middlewares: Registry) {
-  const dispatcher: { current: EventTuple['setEvent'] } = { current: () => {} }
+  const dispatcher: { current: EventDispatcher } = {
+    current: EVENT_DISPATCHED_NULL
+  }
   const contextListeners: ContextListener<EventTuple>[] = []
   const context = createContext<EventTuple>(contextListeners, EVENT_TUPLE_NULL)
+
+  const checkIfMounted = () => {
+    if (!isDev) {
+      return
+    }
+
+    if (dispatcher.current === EVENT_DISPATCHED_NULL) {
+      console.warn('Event system is not wrapped with Provider')
+    }
+  }
 
   /**
    * Provider
@@ -62,6 +77,8 @@ export default function events<
       listeners
     } = contextValue
 
+    checkIfMounted()
+
     // EventListener caller
     const update = React.useCallback(
       ({ event }: EventTuple) => {
@@ -94,6 +111,8 @@ export default function events<
       event: K,
       ...payload: P extends undefined ? [] : [P]
     ): void => {
+      checkIfMounted()
+
       setEvent({ type: event, payload })
     }
 
@@ -106,6 +125,8 @@ export default function events<
    * @returns Subscriber with unsubscribe method
    */
   const subscribe = (eventListeners: ListenerRegistry) => {
+    checkIfMounted()
+
     const subscriber: ContextListener<EventTuple> = ({ event }) => {
       eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
     }
@@ -132,6 +153,8 @@ export default function events<
     event: K,
     ...payload: P extends undefined ? [] : [P]
   ): void => {
+    checkIfMounted()
+
     dispatcher.current({ type: event, payload })
   }
 

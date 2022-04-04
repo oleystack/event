@@ -13,6 +13,8 @@ export type EventRegistry<
 
 export type EventState = { type: EventKey; payload: any }
 
+export type EventDispatcher = React.Dispatch<React.SetStateAction<EventState>>
+
 export type EventTuple = {
   event: EventState
   setEvent: React.Dispatch<React.SetStateAction<EventState>>
@@ -20,7 +22,7 @@ export type EventTuple = {
 
 export type Provider<Props> = React.FC<Props>
 
-export type ContextListener<Value> = (payload: Readonly<Value>) => void;
+export type ContextListener<Value> = (payload: Readonly<Value>) => void
 
 export type Context<Value> = React.Context<Value> & {
   Provider: Provider<React.ProviderProps<Value>>
