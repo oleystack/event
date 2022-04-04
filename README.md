@@ -137,8 +137,8 @@ const Component = () => {
   const [message, setMessage] = React.useState("")
 
   useEvent({
-    aliceClicked: (payload: string) => console.log("I DON'T rerender this component!"),
-    bobClicked: (payload: string) => setMessage("I DO rerender this component!")
+    aliceClicked: () => console.log("I DON'T rerender this component!"),
+    bobClicked: () => setMessage("I DO rerender this component!")
   })
   
   // ...
@@ -155,11 +155,12 @@ Now you've got **completely type-safe side-effects**, isn't cool?
 
 ```tsx
 import { state } from '@bit-about/state'
-import { useEvent } from './user-events'
+import { useEvent } from './user-events' // Hook generated from events()
+import User from '../models/user'
 
 const [AuthProvider, useAuth] = state(
   () => {
-    const [user, setUser] = React.useState<User>(null)
+    const [user, setUser] = React.useState<User | null>(null)
     
     useEvent({
       userLogged: (user: User) => setUser(user),
