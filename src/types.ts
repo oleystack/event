@@ -15,11 +15,6 @@ export type EventState = { type: EventKey; payload: any }
 
 export type EventDispatcher = React.Dispatch<React.SetStateAction<EventState>>
 
-export type EventTuple = {
-  event: EventState
-  setEvent: React.Dispatch<React.SetStateAction<EventState>>
-}
-
 export type Provider<Props> = React.FC<Props>
 
 export type ContextListener<Value> = (payload: Readonly<Value>) => void

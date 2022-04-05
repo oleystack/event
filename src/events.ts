@@ -2,13 +2,10 @@ import * as React from 'react'
 import { isDev } from './common'
 import { createContext, useIsomorphicLayoutEffect } from './context'
 import {
-  Context,
-  ContextValue,
   EventKey,
   EventMiddleware,
   EventRegistry,
   EventState,
-  EventTuple,
   EventListener,
   ContextListener,
   EventDispatcher
@@ -20,10 +17,6 @@ const EVENT_DISPATCHED_NULL: EventDispatcher = () => {
     console.warn('Tried to dispatch event without Provider')
   }
 }
-const EVENT_TUPLE_NULL: EventTuple = {
-  event: EVENT_STATE_NULL,
-  setEvent: () => {}
-}
 
 export default function events<
   Key extends EventKey,
@@ -33,8 +26,8 @@ export default function events<
   const dispatcher: { current: EventDispatcher } = {
     current: EVENT_DISPATCHED_NULL
   }
-  const contextListeners: ContextListener<EventTuple>[] = []
-  const context = createContext<EventTuple>(contextListeners, EVENT_TUPLE_NULL)
+  const contextListeners: ContextListener<EventState>[] = []
+  const context = createContext<EventState>(contextListeners, EVENT_STATE_NULL)
 
   const checkIfMounted = () => {
     if (!isDev) {
@@ -54,10 +47,7 @@ export default function events<
     const [event, setEvent] = React.useState<EventState>(EVENT_STATE_NULL)
     dispatcher.current = setEvent
 
-    // To prevent in-place creating EventTuple
-    const state = React.useMemo(() => ({ event, setEvent }), [event])
-
-    return React.createElement(context.Provider, { value: state }, children)
+    return React.createElement(context.Provider, { value: event }, children)
   }
 
   type ListenerRegistry = {
@@ -72,20 +62,9 @@ export default function events<
   const useEvent = (eventListeners?: ListenerRegistry) => {
     checkIfMounted()
 
-    const contextValue = React.useContext(
-      context as unknown as Context<ContextValue<EventTuple>>
-    )
-
-    const {
-      value: {
-        current: { setEvent }
-      },
-      listeners
-    } = contextValue
-
     // EventListener caller
     const update = React.useCallback(
-      ({ event }: EventTuple) => {
+      (event: EventState) => {
         eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
       },
       [context, eventListeners]
@@ -93,13 +72,13 @@ export default function events<
 
     // Adding listener on component initialization
     useIsomorphicLayoutEffect(() => {
-      listeners.push(update)
+      contextListeners.push(update)
 
       return () => {
-        const index = listeners.indexOf(update)
-        listeners.splice(index, 1)
+        const index = contextListeners.indexOf(update)
+        contextListeners.splice(index, 1)
       }
-    }, [listeners])
+    }, [contextListeners])
 
     /* eslint-disable indent */
 
@@ -117,7 +96,7 @@ export default function events<
     ): void => {
       checkIfMounted()
 
-      setEvent({ type: event, payload })
+      dispatcher.current({ type: event, payload })
     }
 
     return dispatch
@@ -131,7 +110,7 @@ export default function events<
   const subscribe = (eventListeners: ListenerRegistry) => {
     checkIfMounted()
 
-    const subscriber: ContextListener<EventTuple> = ({ event }) => {
+    const subscriber: ContextListener<EventState> = (event) => {
       eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
     }
 
