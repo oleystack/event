@@ -49,7 +49,7 @@ const createProvider = <Value>(
   }
 
   if (isDev) {
-    Provider.displayName = 'Event.Provider'
+    Provider.displayName = 'BitAboutEvent.Provider'
   }
 
   return Provider as unknown as React.Provider<ContextValue<Value>>
