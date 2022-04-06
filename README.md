@@ -76,6 +76,23 @@ const Component = () => {
 > - listen on events with **useEvent hook**
 > - dispatch events with **useEvent hook**
 
+## 👉 Rerendering
+Neither listeners nor event dispatching rerender the component.<br />
+The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
+
+```jsx
+const Component = () => {
+  const [message, setMessage] = React.useState("")
+
+  useEvent({
+    aliceClicked: () => console.log("I DON'T rerender this component!"),
+    bobClicked: () => setMessage("I DO rerender this component!")
+  })
+  
+  // ...
+}
+```
+
 ## Event Middlewares
 Events in `events()` are actually payload middlewares.
 
@@ -127,25 +144,6 @@ const [EventProvider, useEvent] = events({
 
 > NOTE:
 > `withPayload` does the call with `()`. If you forget about it, your payload will be the function 🤡
-
-## 👉 Rerendering
-Neither listeners nor event dispatching rerender the component.<br />
-The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
-
-```jsx
-const Component = () => {
-  const [message, setMessage] = React.useState("")
-
-  useEvent({
-    aliceClicked: () => console.log("I DON'T rerender this component!"),
-    bobClicked: () => setMessage("I DO rerender this component!")
-  })
-  
-  // ...
-}
-```
-
-
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
