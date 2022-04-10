@@ -30,6 +30,7 @@ type EventDispatcher = React.Dispatch<React.SetStateAction<EventState>>
 
 const EVENT_STATE_NULL: EventState = { type: '', payload: {} }
 const EVENT_DISPATCHED_NULL: EventDispatcher = () => {
+  /* istanbul ignore next */
   if (isDev) {
     console.warn('Tried to dispatch event without Provider')
   }

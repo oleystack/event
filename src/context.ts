@@ -53,6 +53,7 @@ const createProvider = <Value>(
     )
   }
 
+  /* istanbul ignore next */
   if (isDev) {
     Provider.displayName = 'BitAboutEvent.Provider'
   }
