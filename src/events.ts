@@ -63,6 +63,18 @@ export default function events<
   }
 
   /**
+   * Informat
+   * @param eventListeners ListenerRegistry
+   * @returns void
+   */
+  const informant: (
+    eventListeners?: ListenerRegistry
+  ) => ContextListener<EventState> =
+    (eventListeners?: ListenerRegistry) => (event: EventState) => {
+      eventListeners?.[event.type]?.(middlewares[event.type](...event.payload))
+    }
+
+  /**
    * Provider
    */
   const BindProvider: React.FC = ({ children }) => {
@@ -80,12 +92,9 @@ export default function events<
    */
   const useEvent = (eventListeners?: ListenerRegistry) => {
     // EventListener caller
-    const update = React.useCallback(
-      (event: EventState) => {
-        eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
-      },
-      [context, eventListeners]
-    )
+    const update = React.useCallback(informant(eventListeners), [
+      eventListeners
+    ])
 
     // Adding listener on component initialization
     useIsomorphicLayoutEffect(() => {
@@ -106,9 +115,7 @@ export default function events<
    * @returns Subscriber with unsubscribe method
    */
   const subscribe = (eventListeners: ListenerRegistry) => {
-    const subscriber: ContextListener<EventState> = (event) => {
-      eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
-    }
+    const subscriber: ContextListener<EventState> = informant(eventListeners)
 
     contextListeners.push(subscriber)
 
