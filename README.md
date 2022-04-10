@@ -45,23 +45,23 @@ const App = () => (
 )
 ```
 
-Listen and dispatch your defined event in type-safe manner
+🗣️ Dispatch your events
 
 ```jsx
 const Button = () => {
   const dispatchEvent = useEvent()
   
-  // 🗣️ Dispatch events
   const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
   
   return <button onClick={onButtonClick}>Call event</button>
 }
 ```
+
+👂 Listen on your events
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState("")
 
-  // 👂 Listen on events
   useEvent({
     buttonClicked: (payload: string) => setMessage(payload)
   })
@@ -75,6 +75,23 @@ const Component = () => {
 > - wrap the components tree with the generated `EventProvider`<br />
 > - listen on events with **useEvent hook**
 > - dispatch events with **useEvent hook**
+
+## 👉 Rerendering
+Neither listeners nor event dispatching rerender the component.<br />
+The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
+
+```jsx
+const Component = () => {
+  const [message, setMessage] = React.useState("")
+
+  useEvent({
+    aliceClicked: () => console.log("I DON'T rerender this component!"),
+    bobClicked: () => setMessage("I DO rerender this component!")
+  })
+  
+  // ...
+}
+```
 
 ## Event Middlewares
 Events in `events()` are actually payload middlewares.
@@ -128,25 +145,6 @@ const [EventProvider, useEvent] = events({
 > NOTE:
 > `withPayload` does the call with `()`. If you forget about it, your payload will be the function 🤡
 
-## 👉 Rerendering
-Neither listeners nor event dispatching rerender the component.<br />
-The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
-
-```jsx
-const Component = () => {
-  const [message, setMessage] = React.useState("")
-
-  useEvent({
-    aliceClicked: () => console.log("I DON'T rerender this component!"),
-    bobClicked: () => setMessage("I DO rerender this component!")
-  })
-  
-  // ...
-}
-```
-
-
-
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
 Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
@@ -155,10 +153,10 @@ Now you've got **completely type-safe side-effects**, isn't cool?
 
 ```tsx
 import { state } from '@bit-about/state'
-import { useEvent } from './user-events' // Hook generated from events()
+import { useEvent } from './auth-events' // Hook generated from events()
 import User from '../models/user'
 
-const [AuthProvider, useAuth] = state(
+const [UserProvider, useUser] = state(
   () => {
     const [user, setUser] = React.useState<User | null>(null)
     
@@ -167,7 +165,7 @@ const [AuthProvider, useAuth] = state(
       userLoggout: () => setUser(null)
     })
     
-    return { user }
+    return user
   }
 )
 ```
