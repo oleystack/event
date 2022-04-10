@@ -1,18 +1,13 @@
 import React, { useRef } from 'react'
-import { events, withNothing, withDefault, withPayload } from '@bit-about/event'
+import { events } from '@bit-about/event'
 
 /**
  * Declaring EVENTS
  */
-// const [EventProvider, useEvent] = events({
-//   buttonClicked: (randomNumber: number) => `randomNumber:${randomNumber}`,
-//   idle: () => 'defaultValue'
-// })
-
 const [EventProvider, useEvent] = events({
-  userLogged: withPayload<{ id: number}>(),
-  homeVisited: withNothing,
-  buttonClicked: withDefault('asd')
+  buttonClicked: (randomNumber: number, comment?: string) =>
+    `randomNumber:${randomNumber}:${comment}`,
+  idle: () => 'defaultValue'
 })
 
 /**
@@ -30,7 +25,7 @@ const Counter = () => {
  */
 const Alice = () => {
   useEvent({
-    buttonClicked: (payload: string) => console.log('Alice', payload)
+    buttonClicked: (payload: string) => console.log('buttonClicked', payload)
   })
 
   return (
@@ -53,7 +48,7 @@ const Buttons = () => {
     <div>
       <h1>Buttons</h1>
       <Counter />
-      <button onClick={() => dispatch('buttonClicked', Math.random())}>
+      <button onClick={() => dispatch('buttonClicked', Math.random(), 'test')}>
         Call event
       </button>
     </div>

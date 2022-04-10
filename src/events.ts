@@ -1,17 +1,34 @@
 import * as React from 'react'
-import { isDev } from './common'
-import { createContext, useIsomorphicLayoutEffect } from './context'
-import {
-  EventKey,
-  EventMiddleware,
-  EventRegistry,
-  EventState,
-  EventListener,
-  ContextListener,
-  EventDispatcher
-} from './types'
+import { isDev, useIsomorphicLayoutEffect } from './common'
+import { createContext } from './context'
+import { ContextListener } from './types'
 
-const EVENT_STATE_NULL: EventState = { type: '_init', payload: {} } // todo: params listeners
+/**
+ * Types
+ */
+
+type EventKey = string | number | symbol
+
+type EventMiddleware<In extends Readonly<unknown>[], Out> = (
+  ...payload: In
+) => Out
+
+type EventListener<Payload> = (payload: Payload) => void
+
+type EventRegistry<
+  Key extends EventKey,
+  Event extends EventMiddleware<any, any>
+> = Record<Key, Event>
+
+type EventState = { type: EventKey; payload: any }
+
+type EventDispatcher = React.Dispatch<React.SetStateAction<EventState>>
+
+/**
+ * Constants
+ */
+
+const EVENT_STATE_NULL: EventState = { type: '', payload: {} }
 const EVENT_DISPATCHED_NULL: EventDispatcher = () => {
   if (isDev) {
     console.warn('Tried to dispatch event without Provider')
@@ -23,20 +40,26 @@ export default function events<
   Middleware extends EventMiddleware<any, any>,
   Registry extends EventRegistry<Key, Middleware>
 >(middlewares: Registry) {
+  type ListenerRegistry = {
+    [key in keyof Partial<Registry>]: EventListener<ReturnType<Registry[key]>>
+  }
+
   const dispatcher: { current: EventDispatcher } = {
     current: EVENT_DISPATCHED_NULL
   }
   const contextListeners: ContextListener<EventState>[] = []
   const context = createContext<EventState>(contextListeners, EVENT_STATE_NULL)
 
-  const checkIfMounted = () => {
-    if (!isDev) {
-      return
-    }
-
-    if (dispatcher.current === EVENT_DISPATCHED_NULL) {
-      console.warn('Event system is not wrapped with Provider')
-    }
+  /**
+   * Dispatcher
+   * @param event
+   * @param payload
+   */
+  const dispatch = <Event extends keyof Registry>(
+    event: Event,
+    ...payload: Parameters<Registry[Event]>
+  ): void => {
+    dispatcher.current({ type: event, payload })
   }
 
   /**
@@ -50,18 +73,12 @@ export default function events<
     return React.createElement(context.Provider, { value: event }, children)
   }
 
-  type ListenerRegistry = {
-    [key in keyof Partial<Registry>]: EventListener<ReturnType<Registry[key]>>
-  }
-
   /**
    * useEvent hook
    * @param eventListeners List of subscribed events
    * @returns Dispatch function
    */
   const useEvent = (eventListeners?: ListenerRegistry) => {
-    checkIfMounted()
-
     // EventListener caller
     const update = React.useCallback(
       (event: EventState) => {
@@ -80,25 +97,6 @@ export default function events<
       }
     }, [contextListeners])
 
-    /* eslint-disable indent */
-
-    /**
-     * Dispatcher
-     * @param event
-     * @param payload
-     */
-    const dispatch = <
-      K extends keyof Registry,
-      P extends Parameters<Registry[K]>[0]
-    >(
-      event: K,
-      ...payload: P extends undefined ? [] : [P]
-    ): void => {
-      checkIfMounted()
-
-      dispatcher.current({ type: event, payload })
-    }
-
     return dispatch
   }
 
@@ -108,8 +106,6 @@ export default function events<
    * @returns Subscriber with unsubscribe method
    */
   const subscribe = (eventListeners: ListenerRegistry) => {
-    checkIfMounted()
-
     const subscriber: ContextListener<EventState> = (event) => {
       eventListeners?.[event.type]?.(middlewares[event.type](event.payload))
     }
@@ -122,23 +118,6 @@ export default function events<
     }
 
     return { unsubscribe }
-  }
-
-  /**
-   * Dispatcher
-   * @param event
-   * @param payload
-   */
-  const dispatch = <
-    K extends keyof Registry,
-    P extends Parameters<Registry[K]>
-  >(
-    event: K,
-    ...payload: P extends undefined ? [] : [P]
-  ): void => {
-    checkIfMounted()
-
-    dispatcher.current({ type: event, payload })
   }
 
   return [BindProvider, useEvent, { subscribe, dispatch }] as const

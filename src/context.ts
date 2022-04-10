@@ -3,12 +3,20 @@ import {
   unstable_NormalPriority as NormalPriority,
   unstable_runWithPriority as runWithPriority
 } from 'scheduler'
-import { canUseDOM, isDev } from './common'
-import { Context, ContextListener, ContextValue } from './types'
+import { useIsomorphicLayoutEffect, isDev } from './common'
+import { ContextListener } from './types'
 
-export const useIsomorphicLayoutEffect: typeof React.useEffect = canUseDOM()
-  ? React.useLayoutEffect
-  : React.useEffect
+type Context<Value> = React.Context<Value> & {
+  Provider: React.FC<React.ProviderProps<Value>>
+
+  // We don't support Consumer API
+  Consumer: never
+}
+
+type ContextValue<Value> = {
+  /** Holds an actual value of React's context that will be propagated down for computations. */
+  value: React.MutableRefObject<Value>
+}
 
 const createProvider = <Value>(
   listeners: ContextListener<Value>[],
@@ -23,8 +31,7 @@ const createProvider = <Value>(
 
     if (!contextValue.current) {
       contextValue.current = {
-        value: valueRef,
-        listeners
+        value: valueRef
       }
     }
 
@@ -33,11 +40,9 @@ const createProvider = <Value>(
       valueRef.current = props.value
 
       runWithPriority(NormalPriority, () => {
-        ;(contextValue.current as ContextValue<Value>).listeners.forEach(
-          (listener) => {
-            listener(props.value)
-          }
-        )
+        listeners.forEach((listener) => {
+          listener(props.value)
+        })
       })
     }, [props.value])
 
@@ -60,8 +65,7 @@ export const createContext = <Value>(
   defaultValue: Value
 ): Context<Value> => {
   const context = React.createContext<ContextValue<Value>>({
-    value: { current: defaultValue },
-    listeners
+    value: { current: defaultValue }
   })
 
   context.Provider = createProvider<Value>(listeners, context.Provider)
