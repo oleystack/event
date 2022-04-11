@@ -21,7 +21,7 @@ npm i @bit-about/event
 - Efficient and hook-based
 - ...with static listener and dispatcher
 - No centralized event provider
-- Tiny - only **2kB**
+- Tiny - only **1.6kB**
 - **Just works** ™
 
 ## Usage
