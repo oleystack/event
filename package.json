@@ -1,6 +1,6 @@
 {
   "name": "@bit-about/event",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny and powerfull hook-based event system library.",
   "author": "Gareneye",
   "license": "MIT",
