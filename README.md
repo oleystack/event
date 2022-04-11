@@ -19,8 +19,9 @@ npm install --save @bit-about/event
 - 100% **Idiomatic React**
 - 100% Typescript with event types deduction
 - Efficient and hook-based
+- ...with static listener and dispatcher
 - No centralized event provider
-- Tiny - only **100KB**
+- Tiny - only **2kB**
 - **Just works** ™
 
 ## Usage
@@ -40,7 +41,7 @@ const [EventProvider, useEvent] = events({
 ```jsx
 const App = () => (
   <EventProvider>
-    {/* ... */}
+    ...
   </EventProvider>
 )
 ```
@@ -51,7 +52,7 @@ const App = () => (
 const Button = () => {
   const dispatchEvent = useEvent()
   
-  const onButtonClick = () => dispatchEvent('buttonClicked', "Hello")
+  const onButtonClick = () => dispatchEvent('buttonClicked', 'Hello')
   
   return <button onClick={onButtonClick}>Call event</button>
 }
@@ -60,7 +61,7 @@ const Button = () => {
 👂 Listen on your events
 ```jsx
 const Component = () => {
-  const [message, setMessage] = React.useState("")
+  const [message, setMessage] = React.useState('')
 
   useEvent({
     buttonClicked: (payload: string) => setMessage(payload)
@@ -70,11 +71,26 @@ const Component = () => {
 }
 ```
 
-> **You don't need to think too much** - it's easy, look:<br />
-> - define events with payloads using `events()`<br />
-> - wrap the components tree with the generated `EventProvider`<br />
-> - listen on events with **useEvent hook**
-> - dispatch events with **useEvent hook**
+## Static access
+The third element of the `events()` result tuple is object which provides access in static manner (without hook). 
+
+```jsx
+const [AppEventProvider, useAppEvent, appEvent] = events(...)
+```
+
+and then
+```jsx
+// 💪 Get substate
+appEvent.dispatch('buttonClicked', 'Hello Allice!')
+
+// 🤌 Subscribe and listen on new events
+const subscriber = appEvent.subscribe({
+  buttonClicked: (payload: string) => console.log(payload)
+})
+  
+// remember to unsubscribe!
+subscriber.unsubscribe()
+```
 
 ## 👉 Rerendering
 Neither listeners nor event dispatching rerender the component.<br />
@@ -82,14 +98,14 @@ The component will only be rerendered if its state is explicitly changed (in e.g
 
 ```jsx
 const Component = () => {
-  const [message, setMessage] = React.useState("")
+  const [message, setMessage] = React.useState('')
 
   useEvent({
-    aliceClicked: () => console.log("I DON'T rerender this component!"),
-    bobClicked: () => setMessage("I DO rerender this component!")
+    aliceClicked: () => console.log('I DO NOT rerender this component!'),
+    bobClicked: () => setMessage('I DO rerender this component!')
   })
   
-  // ...
+  return <p>{message}</p>
 }
 ```
 
@@ -98,52 +114,21 @@ Events in `events()` are actually payload middlewares.
 
 ```jsx
 const [EventProvider, useEvent] = events({
-  buttonClicked: (payload: string) => `Hello ${message}!`,
-})
-```
-
-```jsx
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Hello Alice!"
+  buttonClicked: (payload: string) => `Hello ${message}!`, // Transforms string payload to another
+  avatarClicked: () => `Bob!`, // Provides default payload
 })
 
-dispatchEvent('buttonClicked', "Alice")
+const dispatch = useEvent({
+  buttonClicked: (payload: string) => console.log(payload), // "Hello Alice!",
+  avatarClicked: (payload: string) => console.log(payload), // "Bob!"
+})
+
+dispatch('buttonClicked', 'Alice')
+dispatch('avatarClicked')
 ```
 
 > NOTE: <br />
-> The library is completely type safe <br/>
-> so Typescript will inform you when you use wrong payload anywhere
-
-#### Default payload
-When you don't need the payload and want some default object, you can omit middleware parameters.
-```jsx
-const [EventProvider, useEvent] = events({
-  buttonClicked: () => `Bob!`,
-})
-```
-
-```jsx
-const dispatchEvent = useEvent({
-  buttonClicked: (payload: string) => console.log(payload) // "Bob!"
-})
-
-dispatchEvent('buttonClicked')
-```
-
-#### Middleware helpers
-Are you an aesthete? <br />
-Try: `withPayload<PayloadType>()`, `withDefault(defaultPayload)` and `withNothing`.
-
-```tsx
-const [EventProvider, useEvent] = events({
-  userLogged: withPayload<{ id: number }>(),
-  homeVisited: withNothing,
-  buttonClicked: withDefault({ type: 'userButton' })
-})
-```
-
-> NOTE:
-> `withPayload` does the call with `()`. If you forget about it, your payload will be the function 🤡
+> The library is completely type safe so Typescript will inform you when you use wrong payload anywhere
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
 Are you tired of sending logic to the related components?<br />
