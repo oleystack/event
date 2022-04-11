@@ -2,8 +2,8 @@
 <p align="center">
 <a href="https://www.npmjs.com/package/@bit-about/event"><img alt="" src="https://img.shields.io/npm/v/@bit-about/event.svg" /></a>
 <img alt="Bundle size" src="https://img.shields.io/bundlephobia/min/@bit-about/event?label=size" />
-<a href="https://codecov.io/gh/bit-about/event"><img alt="" src="https://codecov.io/gh/bit-about/event/branch/main/graph/badge.svg?token=ZBD02VKG6J" /></a>
-<br />
+<a href="https://codecov.io/gh/bit-about/event"><img alt="" src="https://img.shields.io/codecov/c/github/bit-about/event?token=ZBD02VKG6J" />
+<br /><br />
 💫 Tiny and powerful hook-based event system for React.<br />
 100% Idiomatic React.<br />
 </p>
