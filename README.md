@@ -11,7 +11,7 @@
 ## Install
 
 ```bash
-npm install --save @bit-about/event
+npm i @bit-about/event
 ```
 
 ## Features
