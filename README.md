@@ -11,7 +11,7 @@
 ## Install
 
 ```bash
-npm install --save @bit-about/event
+npm i @bit-about/event
 ```
 
 ## Features
@@ -21,7 +21,7 @@ npm install --save @bit-about/event
 - Efficient and hook-based
 - ...with static listener and dispatcher
 - No centralized event provider
-- Tiny - only **2kB**
+- Tiny - only **1.6kB**
 - **Just works** ™
 
 ## Usage
@@ -50,11 +50,11 @@ const App = () => (
 
 ```jsx
 const Button = () => {
-  const dispatchEvent = useEvent()
+  const dispatch = useEvent()
   
-  const onButtonClick = () => dispatchEvent('buttonClicked', 'Hello')
+  const onClick = () => dispatch('buttonClicked', 'Hello')
   
-  return <button onClick={onButtonClick}>Call event</button>
+  return <button onClick={onClick}>Call event</button>
 }
 ```
 
