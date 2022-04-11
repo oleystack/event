@@ -50,9 +50,9 @@ const App = () => (
 
 ```jsx
 const Button = () => {
-  const dispatchEvent = useEvent()
+  const dispatch = useEvent()
   
-  const onButtonClick = () => dispatchEvent('buttonClicked', 'Hello')
+  const onButtonClick = () => dispatch('buttonClicked', 'Hello')
   
   return <button onClick={onButtonClick}>Call event</button>
 }
