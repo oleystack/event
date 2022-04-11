@@ -52,9 +52,9 @@ const App = () => (
 const Button = () => {
   const dispatch = useEvent()
   
-  const onButtonClick = () => dispatch('buttonClicked', 'Hello')
+  const onClick = () => dispatch('buttonClicked', 'Hello')
   
-  return <button onClick={onButtonClick}>Call event</button>
+  return <button onClick={onClick}>Call event</button>
 }
 ```
 
