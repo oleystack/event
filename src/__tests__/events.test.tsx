@@ -2,7 +2,6 @@ import * as React from 'react'
 import { fireEvent, render } from '@testing-library/react'
 import events from '../events'
 import { act } from 'react-dom/test-utils'
-import { withDefault, withNothing, withPayload } from '../consts'
 
 // Counter Component
 const Counter = ({ role }: { role: string }) => {
@@ -281,58 +280,4 @@ test('Static usage', () => {
   expect(aliceListener).toBeCalledTimes(3)
   expect(staticAliceListener).toBeCalledTimes(2)
   expect(staticBobListener).toBeCalledTimes(1) // should not changed
-})
-
-test('Basic usage', () => {
-  const withPayloadListener = jest.fn()
-  const withNothingListener = jest.fn()
-  const withDefaultListener = jest.fn()
-
-  const [Provider, , staticEvent] = events({
-    withPayload: withPayload<{ alice: string; bob: number }>(),
-    withNothing: withNothing,
-    withDefault: withDefault({ alice: 'alice', bob: 100 })
-  })
-
-  const App = () => (
-    <Provider>
-      <Counter role='counter' />
-    </Provider>
-  )
-
-  render(<App />)
-
-  staticEvent.subscribe({
-    withPayload: withPayloadListener,
-    withNothing: withNothingListener,
-    withDefault: withDefaultListener
-  })
-
-  expect(withPayloadListener).toBeCalledTimes(0)
-  expect(withNothingListener).toBeCalledTimes(0)
-  expect(withDefaultListener).toBeCalledTimes(0)
-
-  act(() => {
-    staticEvent.dispatch('withPayload', { alice: 'alice', bob: 100 })
-  })
-  expect(withPayloadListener).toBeCalledTimes(1)
-  expect(withPayloadListener).toBeCalledWith({ alice: 'alice', bob: 100 })
-  expect(withNothingListener).toBeCalledTimes(0)
-  expect(withDefaultListener).toBeCalledTimes(0)
-
-  act(() => {
-    staticEvent.dispatch('withNothing')
-  })
-  expect(withPayloadListener).toBeCalledTimes(1)
-  expect(withNothingListener).toBeCalledTimes(1)
-  expect(withNothingListener).toBeCalledWith(undefined)
-  expect(withDefaultListener).toBeCalledTimes(0)
-
-  act(() => {
-    staticEvent.dispatch('withDefault', { bob: 200 })
-  })
-  expect(withPayloadListener).toBeCalledTimes(1)
-  expect(withNothingListener).toBeCalledTimes(1)
-  expect(withDefaultListener).toBeCalledTimes(1)
-  expect(withDefaultListener).toBeCalledWith({ alice: 'alice', bob: 200 })
 })
