@@ -166,6 +166,9 @@ const [UserProvider, useUser] = state(
 MIT © [Maciej Olejnik 🇵🇱](https://github.com/Gareneye)
 
 ## Support me
+
+<a href="https://github.com/sponsors/Gareneye"><img alt="Support me!" src="https://img.shields.io/badge/github.com-Support%20me!-green"/></a>
+
 If you use my library and you like it...<br />
 it would be nice if you put the name `BitAboutEvent` in the work experience section of your resume.<br />
 Thanks 🙇🏻! 
