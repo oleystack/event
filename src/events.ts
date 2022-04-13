@@ -1,11 +1,15 @@
-import * as React from 'react'
+import React from 'react'
+import {
+  unstable_NormalPriority as NormalPriority,
+  unstable_runWithPriority as runWithPriority
+} from 'scheduler'
+
 import { isDev, useIsomorphicLayoutEffect } from './common'
-import { createContext } from './context'
-import { ContextListener } from './types'
 
 /**
  * Types
  */
+type ContextListener<Value> = (payload: Readonly<Value>) => void
 
 type EventKey = string | number | symbol
 
@@ -49,7 +53,6 @@ export default function events<
     current: EVENT_DISPATCHED_NULL
   }
   const contextListeners: ContextListener<EventState>[] = []
-  const context = createContext<EventState>(contextListeners, EVENT_STATE_NULL)
 
   /**
    * Dispatcher
@@ -78,12 +81,20 @@ export default function events<
   /**
    * Provider
    */
-  const BindProvider: React.FC = ({ children }) => {
+  const BindProvider: React.FC = (props) => {
     // setEvent is never updated
     const [event, setEvent] = React.useState<EventState>(EVENT_STATE_NULL)
     dispatcher.current = setEvent
 
-    return React.createElement(context.Provider, { value: event }, children)
+    useIsomorphicLayoutEffect(() => {
+      runWithPriority(NormalPriority, () => {
+        contextListeners.forEach((listener) => {
+          listener(event)
+        })
+      })
+    }, [event])
+
+    return React.createElement(React.Fragment, props)
   }
 
   /**
