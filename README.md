@@ -78,10 +78,10 @@ const [AppEventProvider, useAppEvent, appEvent] = events(...)
 
 and then
 ```jsx
-// 💪 Get substate
+// 🗣️ Dispatch event
 appEvent.dispatch('buttonClicked', 'Hello Allice!')
 
-// 🤌 Subscribe and listen on new events
+// 👂 Subscribe and listen on new events
 const subscriber = appEvent.subscribe({
   buttonClicked: (payload: string) => console.log(payload)
 })
