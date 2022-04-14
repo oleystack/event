@@ -2,7 +2,7 @@
 <img alt="BitAboutEvent 💫 Tiny and powerful hook-based event system for React. 100% Idiomatic React." src="https://user-images.githubusercontent.com/1496580/162749593-7b98f01b-8fed-4669-8617-a41b0fca004c.png" />
 <br /><br />
 <a href="https://www.npmjs.com/package/@bit-about/event"><img alt="" src="https://img.shields.io/npm/v/@bit-about/event.svg" /></a>
-<img alt="Bundle size" src="https://img.shields.io/bundlephobia/min/@bit-about/event?label=size" />
+<img alt="Bundle size" src="https://img.shields.io/bundlephobia/minzip/@bit-about/event?label=size" />
 <a href="https://codecov.io/gh/bit-about/event"><img alt="" src="https://img.shields.io/codecov/c/github/bit-about/event?token=ZBD02VKG6J" /></a>
 </p>
 
@@ -19,7 +19,7 @@ npm i @bit-about/event
 - Efficient and hook-based
 - ...with static listener and dispatcher
 - No centralized event provider
-- Tiny - only **1.2kB**
+- Tiny - only **0.6kB**
 - **Just works** ™
 
 ## Usage
