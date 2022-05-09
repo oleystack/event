@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
+import { events } from '@bit-about/event'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import './Demo.css'
+
+const [EventProvider, useEvent] = events({
+  buttonClicked: (payload) => payload,
+  userLogged: () => {},
+  modalClosed: () => {}
+})
 
 /**
  * Render counter
@@ -34,6 +41,7 @@ const RenderCounter = () => {
  * COMPONENT_1
  */
 function AliceBox() {
+  const dispatch = useEvent()
 
   return (
     <div className='container column'>
@@ -47,6 +55,8 @@ function AliceBox() {
  * COMPONENT_2
  */
 function BobBox() {
+  const dispatch = useEvent()
+
   return (
     <div className='container column'>
       <span className='container-title'>component_2</span>
@@ -59,24 +69,16 @@ function BobBox() {
  * main component aka APP
  */
 function Demo() {
-
   return (
-    <div className='container column demo'>
-      <span className='container-title'>app</span>
-      <RenderCounter />
+    <EventProvider>
+      <div className='container row demo'>
+        <span className='container-title'>app</span>
+        <RenderCounter />
 
-
-        <div className='container column'>
-          <span className='container-title'>store</span>
-
-
-          <div className='row'>
-            <AliceBox />
-            <BobBox />
-          </div>
-        </div>
-
-    </div>
+        <AliceBox />
+        <BobBox />
+      </div>
+    </EventProvider>
   )
 }
 

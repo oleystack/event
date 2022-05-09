@@ -26,13 +26,12 @@ type EventRegistry<
 
 type EventState = { type: EventKey; payload: any }
 
-type EventDispatcher = React.Dispatch<React.SetStateAction<EventState>>
+type EventDispatcher = (event: EventState) => void
 
 /**
  * Constants
  */
 
-const EVENT_STATE_NULL: EventState = { type: '', payload: {} }
 const EVENT_DISPATCHED_NULL: EventDispatcher = () => {
   /* istanbul ignore next */
   if (isDev) {
@@ -83,16 +82,22 @@ export default function events<
    */
   const BindProvider: React.FC = (props) => {
     // setEvent is never updated
-    const [event, setEvent] = React.useState<EventState>(EVENT_STATE_NULL)
-    dispatcher.current = setEvent
+    const [events, setEvents] = React.useState<EventState[]>([])
+    dispatcher.current = React.useCallback(
+      (event: EventState) => setEvents((oldEvents) => [...oldEvents, event]),
+      [setEvents]
+    )
 
     useIsomorphicLayoutEffect(() => {
       runWithPriority(NormalPriority, () => {
         contextListeners.forEach((listener) => {
-          listener(event)
+          events.forEach((event) => listener(event))
         })
       })
-    }, [event])
+
+      // Removing events without render
+      events.splice(0, events.length)
+    }, [events])
 
     return React.createElement(React.Fragment, props)
   }
