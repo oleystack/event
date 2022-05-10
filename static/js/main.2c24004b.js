@@ -30,7 +30,7 @@ return s.createElement("svg",_extends({fill:"current",stroke:"current",role:"img
 function ComponentOne(){var e=v();return(0,p.jsxs)("div",{className:"container column",children:[(0,p.jsx)("span",{className:"container-title",children:"component_1"}),(0,p.jsx)(y,{}),(0,p.jsxs)("button",{className:"button",onClick:function onClick(){return e("lightSwitchPressed")},children:["Press ",(0,p.jsx)("strong",{children:"light switch"})]})]})}
 /**
  * COMPONENT_2
- */function ComponentTwo(){var e=(0,s.useState)(!1),n=(0,u.default)(e,2),r=n[0],l=n[1];return v({lightSwitchPressed:function lightSwitchPressed(){return l((function(e){return!e}))}}),(0,p.jsxs)("div",{className:"container column",children:[(0,p.jsx)("span",{className:"container-title",children:"component_2"}),(0,p.jsx)(y,{}),(0,p.jsx)("code",{className:"code-preview",children:(0,p.jsxs)("p",{children:["\ud83d\udca1 light is"," ",r?(0,p.jsx)("span",{className:"on",children:"ON"}):(0,p.jsx)("span",{className:"off",children:"OFF"})]})}),(0,p.jsxs)("small",{className:"legend",children:["is listening on ",(0,p.jsx)("strong",{children:"lightSwitchPressed event"})]})]})}
+ */function ComponentTwo(){var e=(0,s.useState)(!1),n=(0,u.default)(e,2),r=n[0],l=n[1];return v({lightSwitchPressed:function lightSwitchPressed(){return l((function(e){return!e}))}}),(0,p.jsxs)("div",{className:"container column",children:[(0,p.jsx)("span",{className:"container-title",children:"component_2"}),(0,p.jsx)(y,{}),(0,p.jsx)("code",{className:"code-preview",children:(0,p.jsxs)("p",{suppressHydrationWarning:!0,children:["\ud83d\udca1 light is"," ",r?(0,p.jsx)("span",{className:"on",children:"ON"}):(0,p.jsx)("span",{className:"off",children:"OFF"})]})}),(0,p.jsxs)("small",{className:"legend",children:["is listening on ",(0,p.jsx)("strong",{children:"lightSwitchPressed event"})]})]})}
 /**
  * main component aka APP
  */ /* harmony default export */n.default=function Demo(){return(0,p.jsx)(h,{children:(0,p.jsxs)("div",{className:"container row demo",children:[(0,p.jsx)("span",{className:"container-title",children:"bedroom"}),(0,p.jsx)(y,{}),(0,p.jsx)(ComponentOne,{}),(0,p.jsx)(ComponentTwo,{})]})})}},
@@ -6192,4 +6192,4 @@ var r={};
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 (0,n.default)(console.log)}()}();
-//# sourceMappingURL=main.721619b5.js.map
+//# sourceMappingURL=main.2c24004b.js.map
