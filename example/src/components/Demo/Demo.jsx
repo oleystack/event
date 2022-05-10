@@ -67,7 +67,7 @@ function ComponentTwo() {
       <RenderCounter />
 
       <code className='code-preview'>
-        <p>
+        <p suppressHydrationWarning>
           💡 light is{' '}
           {isLightOn ? (
             <span className='on'>ON</span>
