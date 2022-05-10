@@ -22,6 +22,8 @@ npm i @bit-about/event
 - Tiny - only **0.6kB**
 - **Just works** ™
 
+### ➡️ [Check demo](https://bit-about.github.io/event/)
+
 ## Usage
 
 1️⃣ Define your events set and their payloads
