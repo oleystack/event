@@ -95,3 +95,20 @@
 .bump-exit-active {
   transition: all 300ms;
 }
+
+.on, .off {
+  font-weight: bold;
+}
+
+.on {
+  color: #26e155;
+}
+
+.off {
+  color: #fff;
+}
+
+.legend {
+  font-size: 0.7em;
+  color: #575c67
+}

@@ -47,3 +47,9 @@ code {
   margin: 0.3em 0;
   font-size: 0.7em;
 }
+
+.code-preview ul {
+  margin: 0;
+  padding: 0;
+  padding-left: 2em;
+}

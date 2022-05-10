@@ -4,9 +4,7 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import './Demo.css'
 
 const [EventProvider, useEvent] = events({
-  buttonClicked: (payload) => payload,
-  userLogged: () => {},
-  modalClosed: () => {}
+  lightSwitchPressed: () => {}
 })
 
 /**
@@ -40,13 +38,16 @@ const RenderCounter = () => {
 /**
  * COMPONENT_1
  */
-function AliceBox() {
+function ComponentOne() {
   const dispatch = useEvent()
 
   return (
     <div className='container column'>
-      <span className='container-title'>component_2</span>
+      <span className='container-title'>component_1</span>
       <RenderCounter />
+      <button className='button' onClick={() => dispatch('lightSwitchPressed')}>
+        Press <strong>light switch</strong>
+      </button>
     </div>
   )
 }
@@ -54,16 +55,32 @@ function AliceBox() {
 /**
  * COMPONENT_2
  */
-function BobBox() {
-  const dispatch = useEvent()
+function ComponentTwo() {
+  const [isLightOn, setIsLightOn] = useState(false)
+  useEvent({
+    lightSwitchPressed: () => setIsLightOn((value) => !value)
+  })
 
   return (
     <div className='container column'>
       <span className='container-title'>component_2</span>
       <RenderCounter />
+
+      <code className='code-preview'>
+        <p>
+          💡 light is{' '}
+          {isLightOn ? (
+            <span className='on'>ON</span>
+          ) : (
+            <span className='off'>OFF</span>
+          )}
+        </p>
+      </code>
+      <small className='legend'>is listening on <strong>lightSwitchPressed event</strong></small>
     </div>
   )
 }
+
 
 /**
  * main component aka APP
@@ -72,11 +89,11 @@ function Demo() {
   return (
     <EventProvider>
       <div className='container row demo'>
-        <span className='container-title'>app</span>
+        <span className='container-title'>bedroom</span>
         <RenderCounter />
 
-        <AliceBox />
-        <BobBox />
+        <ComponentOne />
+        <ComponentTwo />
       </div>
     </EventProvider>
   )
