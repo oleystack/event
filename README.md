@@ -13,9 +13,24 @@ npm i @bit-about/event
 ```
 
 ## Migrations
-- v1 -> v2
-
+<details>
+  <summary>v1 -> v2</summary>
+  
   > Events dispatch approach has been changed. There is no longer a functions calling with their names in string.
+  >
+  > ✖️ old one:
+  > ```jsx
+  > const dispatch = useEvent()
+  > dispatch('onBobPress', 'hello') 
+  > ```
+  > ✅ new one:
+  > ```jsx
+  > const { onBobPress } = useEvent()
+  > onBobPress('hello')
+  > ```
+</details>
+
+
 
 ## Features
 
