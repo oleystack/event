@@ -185,11 +185,11 @@ const [UserProvider, useUser] = state(
 - [use-context-selector](https://github.com/dai-shi/use-context-selector) & [FluentUI](https://github.com/microsoft/fluentui) - fancy rerender avoiding tricks and code main inspiration
 
 ## License
-MIT © [Maciej Olejnik 🇵🇱](https://github.com/macolej)
+MIT © [Maciej Olejnik 🇵🇱](https://github.com/macoley)
 
 ## Support me
 
-<a href="https://github.com/sponsors/macolej"><img alt="Support me!" src="https://img.shields.io/badge/github.com-Support%20me!-green"/></a>
+<a href="https://github.com/sponsors/macoley"><img alt="Support me!" src="https://img.shields.io/badge/github.com-Support%20me!-green"/></a>
 
 If you use my library and you like it...<br />
 it would be nice if you put the name `BitAboutEvent` in the work experience section of your resume.<br />
