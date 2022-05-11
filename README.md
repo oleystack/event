@@ -36,8 +36,8 @@ npm i @bit-about/event
 
 - 100% **Idiomatic React**
 - 100% Typescript with event types deduction
-- Efficient and hook-based
-- ...with static listener and dispatcher
+- Listen or dispatch events from a hook...
+- ...or utilise static access
 - No centralized event provider
 - Tiny - only **0.6kB**
 - **Just works** ™
