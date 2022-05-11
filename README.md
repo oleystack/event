@@ -116,13 +116,13 @@ Events in `events()` are actually payload middlewares.
 
 ```jsx
 const [EventProvider, useEvents] = events({
-  buttonClicked: (payload: string) => `Hello ${message}!`, // Transforms string payload to another
-  avatarClicked: () => `Bob!`, // Provides default payload
+  buttonClicked: (payload) => `Hello ${message}!`, // Transforms string payload to another
+  avatarClicked: () => `Bob!`,                     // Provides default payload
 })
 
 const { buttonClicked, avatarClicked } = useEvents({
-  buttonClicked: (payload: string) => console.log(payload), // "Hello Alice!",
-  avatarClicked: (payload: string) => console.log(payload), // "Bob!"
+  buttonClicked: (payload) => console.log(payload), // prints "Hello Alice!",
+  avatarClicked: (payloa) => console.log(payload),  // prints "Bob!"
 })
 
 buttonClicked('Alice')
