@@ -122,7 +122,7 @@ const [EventProvider, useEvents] = events({
 
 const { buttonClicked, avatarClicked } = useEvents({
   buttonClicked: (payload) => console.log(payload), // prints "Hello Alice!",
-  avatarClicked: (payload) => console.log(payload),  // prints "Bob!"
+  avatarClicked: (payload) => console.log(payload), // prints "Bob!"
 })
 
 buttonClicked('Alice')
