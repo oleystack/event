@@ -52,9 +52,7 @@ const App = () => (
 const Button = () => {
   const { buttonClicked } = useEvents()
   
-  const onClick = () => buttonClicked('Hello')
-  
-  return <button onClick={onClick}>Call event</button>
+  return <button onClick={() => buttonClicked('Hello')}>Call event</button>
 }
 ```
 
