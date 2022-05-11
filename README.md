@@ -12,6 +12,11 @@
 npm i @bit-about/event
 ```
 
+## Migrations
+- v1 -> v2
+
+  > Events dispatch approach has been changed. There is no longer a functions calling with their names in string.
+
 ## Features
 
 - 100% **Idiomatic React**
