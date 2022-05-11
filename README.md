@@ -66,7 +66,7 @@ const App = () => (
 )
 ```
 
-🗣️ Dispatch your events
+🗣️ Dispatch your events in one place...
 
 ```jsx
 const Button = () => {
@@ -80,7 +80,7 @@ const Button = () => {
 }
 ```
 
-👂 Listen for your events
+👂 ...and listen for they in another
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState('')
