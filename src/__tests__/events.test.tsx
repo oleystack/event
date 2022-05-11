@@ -12,28 +12,28 @@ const Counter = ({ role }: { role: string }) => {
 
 test('Basic usage', () => {
   const aliceListener = jest.fn()
-  const [Provider, useEvent] = events({
+  const [Provider, useEvents] = events({
     onAlicePress: (alice: string, bob: number) => `alice:${alice},bob:${bob}`,
     onBobPress: () => {}
   })
 
   const Buttons = () => {
-    const dispatch = useEvent()
+    const { onAlicePress, onBobPress } = useEvents()
 
     return (
       <>
         <button
           role='trigger_alice'
-          onClick={() => dispatch('onAlicePress', 'alice', 100)}
+          onClick={() => onAlicePress('alice', 100)}
         />
-        <button role='trigger_bob' onClick={() => dispatch('onBobPress')} />
+        <button role='trigger_bob' onClick={() => onBobPress()} />
         <Counter role='counter_buttons' />
       </>
     )
   }
 
   const Alice = () => {
-    useEvent({
+    useEvents({
       onAlicePress: aliceListener
     })
 
@@ -47,7 +47,7 @@ test('Basic usage', () => {
   const Bob = () => {
     const [value, setValue] = React.useState(0)
 
-    useEvent({
+    useEvents({
       onBobPress: () => setValue((bob) => bob + 1)
     })
 
@@ -105,24 +105,24 @@ test('Basic usage', () => {
 
 test('Ejecting component', () => {
   const aliceListener = jest.fn()
-  const [Provider, useEvent] = events({
+  const [Provider, useEvents] = events({
     onAlicePress: () => {},
     onEject: () => {}
   })
 
   const Buttons = () => {
-    const dispatch = useEvent()
+    const { onAlicePress, onEject } = useEvents()
 
     return (
       <>
-        <button role='trigger_alice' onClick={() => dispatch('onAlicePress')} />
-        <button role='trigger_eject' onClick={() => dispatch('onEject')} />
+        <button role='trigger_alice' onClick={() => onAlicePress()} />
+        <button role='trigger_eject' onClick={() => onEject()} />
       </>
     )
   }
 
   const Alice = () => {
-    useEvent({
+    useEvents({
       onAlicePress: aliceListener
     })
 
@@ -132,7 +132,7 @@ test('Ejecting component', () => {
   const Gate = () => {
     const [isVisible, setIsVisible] = React.useState(true)
 
-    useEvent({
+    useEvents({
       onEject: () => setIsVisible((wasVisible) => !wasVisible)
     })
 
@@ -172,13 +172,13 @@ test('Static usage', () => {
   const staticAliceListener = jest.fn()
   const staticBobListener = jest.fn()
 
-  const [Provider, useEvent, staticEvent] = events({
+  const [Provider, useEvents, staticEvents] = events({
     onAlicePress: (alice: string, bob: number) => `alice:${alice},bob:${bob}`,
     onBobPress: () => {}
   })
 
   const Alice = () => {
-    useEvent({
+    useEvents({
       onAlicePress: aliceListener
     })
 
@@ -192,7 +192,7 @@ test('Static usage', () => {
   const Bob = () => {
     const [value, setValue] = React.useState(0)
 
-    useEvent({
+    useEvents({
       onBobPress: () => setValue((bob) => bob + 1)
     })
 
@@ -213,11 +213,11 @@ test('Static usage', () => {
   )
   const { getByRole } = render(<App />)
 
-  const aliceSubscriber = staticEvent.subscribe({
+  const aliceSubscriber = staticEvents.subscribe({
     onAlicePress: staticAliceListener
   })
 
-  const bobSubscriber = staticEvent.subscribe({
+  const bobSubscriber = staticEvents.subscribe({
     onBobPress: staticBobListener
   })
 
@@ -229,7 +229,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvent.dispatch('onAlicePress', 'alice', 100)
+    staticEvents.dispatch.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('1')
@@ -240,7 +240,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvent.dispatch('onAlicePress', 'alice', 100)
+    staticEvents.dispatch.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('1')
@@ -249,7 +249,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvent.dispatch('onBobPress')
+    staticEvents.dispatch.onBobPress()
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('2')
@@ -260,7 +260,7 @@ test('Static usage', () => {
 
   aliceSubscriber.unsubscribe()
   act(() => {
-    staticEvent.dispatch('onAlicePress', 'alice', 100)
+    staticEvents.dispatch.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('2')
@@ -272,7 +272,7 @@ test('Static usage', () => {
 
   bobSubscriber.unsubscribe()
   act(() => {
-    staticEvent.dispatch('onBobPress')
+    staticEvents.dispatch.onBobPress()
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('3')
