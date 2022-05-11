@@ -69,7 +69,7 @@ const Component = () => {
     buttonClicked: (payload: string) => setMessage(payload)
   })
   
-  return <p>{message}</p>
+  return <p>{message}</p> // "Hello"
 }
 ```
 
