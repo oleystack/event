@@ -12,12 +12,32 @@
 npm i @bit-about/event
 ```
 
+## Migrations
+<details>
+  <summary>v1 -> v2</summary>
+  
+  > Events dispatch approach has been changed. There is no longer a functions calling with their names in string.
+  >
+  > ✖️ old one:
+  > ```jsx
+  > const dispatch = useEvent()
+  > dispatch('onBobPress', 'hello') 
+  > ```
+  > ✅ new one:
+  > ```jsx
+  > const { onBobPress } = useEvent()
+  > onBobPress('hello')
+  > ```
+</details>
+
+
+
 ## Features
 
 - 100% **Idiomatic React**
 - 100% Typescript with event types deduction
-- Efficient and hook-based
-- ...with static listener and dispatcher
+- Listen or dispatch events from a hook...
+- ...or utilise static access
 - No centralized event provider
 - Tiny - only **0.6kB**
 - **Just works** ™
@@ -26,18 +46,18 @@ npm i @bit-about/event
 
 ## Usage
 
-1️⃣ Define your events set and their payloads
+1️⃣ Define *your events* by defining their payload middlewares
 ```jsx
 import { events } from '@bit-about/event'
 
-const [EventProvider, useEvent] = events({
+const [EventProvider, useEvents] = events({
   buttonClicked: (payload: string) => payload,
   userLogged: () => {},
   modalClosed: () => {},
 })
 ```
 
-2️⃣ Wrap the tree with the EventProvider
+2️⃣ Wrap your components in EventProvider
 ```jsx
 const App = () => (
   <EventProvider>
@@ -46,45 +66,47 @@ const App = () => (
 )
 ```
 
-🗣️ Dispatch your events
+🗣️ Dispatch your events in one place...
 
 ```jsx
 const Button = () => {
-  const dispatch = useEvent()
+  const { buttonClicked } = useEvents()
   
-  const onClick = () => dispatch('buttonClicked', 'Hello')
-  
-  return <button onClick={onClick}>Call event</button>
+  return (
+    <button onClick={() => buttonClicked('Hello')}>
+      Call event
+    </button>
+  )
 }
 ```
 
-👂 Listen on your events
+👂 ...and listen for them in another
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState('')
 
-  useEvent({
+  useEvents({
     buttonClicked: (payload: string) => setMessage(payload)
   })
   
-  return <p>{message}</p>
+  return <p>{message}</p> // "Hello"
 }
 ```
 
 ## Static access
-The third element of the `events()` result tuple is object which provides access in static manner (without hook). 
+The third result element of `events()` is object providing access in static manner (without hook). 
 
 ```jsx
-const [AppEventProvider, useAppEvent, appEvent] = events(...)
+const [AppEventProvider, useAppEvents, { subscribe, dispatcher }] = events(...)
 ```
 
 and then
 ```jsx
 // 🗣️ Dispatch event
-appEvent.dispatch('buttonClicked', 'Hello Allice!')
+dispatcher.buttonClicked('Hello Allice!')
 
 // 👂 Subscribe and listen on new events
-const subscriber = appEvent.subscribe({
+const subscriber = subscribe({
   buttonClicked: (payload: string) => console.log(payload)
 })
   
@@ -92,15 +114,15 @@ const subscriber = appEvent.subscribe({
 subscriber.unsubscribe()
 ```
 
-## 👉 Rerendering
-Neither listeners nor event dispatching rerender the component.<br />
-The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
+## 👉 Re-render
+Neither listeners nor events dispatch your components render.<br />
+A component will only be rerendered if it's state is explicitly changed (in e.g. `React.useState`).
 
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState('')
 
-  useEvent({
+  useEvents({
     aliceClicked: () => console.log('I DO NOT rerender this component!'),
     bobClicked: () => setMessage('I DO rerender this component!')
   })
@@ -110,42 +132,42 @@ const Component = () => {
 ```
 
 ## Event Middlewares
-Events in `events()` are actually payload middlewares.
+Events in `events()` are payload middlewares. They can transform payload into another.
 
 ```jsx
-const [EventProvider, useEvent] = events({
-  buttonClicked: (payload: string) => `Hello ${message}!`, // Transforms string payload to another
-  avatarClicked: () => `Bob!`, // Provides default payload
+const [EventProvider, useEvents] = events({
+  buttonClicked: (payload) => `Hello ${message}!`, // Transforms string payload to another
+  avatarClicked: () => `Bob!`,                     // Provides default payload
 })
 
-const dispatch = useEvent({
-  buttonClicked: (payload: string) => console.log(payload), // "Hello Alice!",
-  avatarClicked: (payload: string) => console.log(payload), // "Bob!"
+const { buttonClicked, avatarClicked } = useEvents({
+  buttonClicked: (payload) => console.log(payload), // prints "Hello Alice!",
+  avatarClicked: (payload) => console.log(payload), // prints "Bob!"
 })
 
-dispatch('buttonClicked', 'Alice')
-dispatch('avatarClicked')
+buttonClicked('Alice')
+avatarClicked()
 ```
 
 > NOTE: <br />
-> The library is completely type safe so Typescript will inform you when you use wrong payload anywhere
+> The library is full type-safe, so Typescript will inform you when you use wrong payload anywhere.
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
-Are you tired of sending logic to the related components?<br />
-Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+Are you tired of sending logic to a related components?<br />
+Move your bussiness logic to hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
 
-Now you've got **completely type-safe side-effects**, isn't cool?
+Now you've got **completely type-safe side-effects**. Isn't that cool?
 
 ```tsx
 import { state } from '@bit-about/state'
-import { useEvent } from './auth-events' // Hook generated from events()
+import { useEvents } from './auth-events' // Hook generated from events()
 import User from '../models/user'
 
 const [UserProvider, useUser] = state(
   () => {
     const [user, setUser] = React.useState<User | null>(null)
     
-    useEvent({
+    useEvents({
       userLogged: (user: User) => setUser(user),
       userLoggout: () => setUser(null)
     })
