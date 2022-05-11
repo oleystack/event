@@ -80,7 +80,7 @@ const Button = () => {
 }
 ```
 
-👂 ...and listen for they in another
+👂 ...and listen for them in another
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState('')
