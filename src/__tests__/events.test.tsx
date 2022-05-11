@@ -229,7 +229,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvents.dispatch.onAlicePress('alice', 100)
+    staticEvents.dispatcher.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('1')
@@ -240,7 +240,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvents.dispatch.onAlicePress('alice', 100)
+    staticEvents.dispatcher.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('1')
@@ -249,7 +249,7 @@ test('Static usage', () => {
   expect(staticBobListener).toBeCalledTimes(0)
 
   act(() => {
-    staticEvents.dispatch.onBobPress()
+    staticEvents.dispatcher.onBobPress()
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('2')
@@ -260,7 +260,7 @@ test('Static usage', () => {
 
   aliceSubscriber.unsubscribe()
   act(() => {
-    staticEvents.dispatch.onAlicePress('alice', 100)
+    staticEvents.dispatcher.onAlicePress('alice', 100)
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('2')
@@ -272,7 +272,7 @@ test('Static usage', () => {
 
   bobSubscriber.unsubscribe()
   act(() => {
-    staticEvents.dispatch.onBobPress()
+    staticEvents.dispatcher.onBobPress()
   })
   expect(getByRole('counter_alice').textContent).toEqual('1')
   expect(getByRole('counter_bob').textContent).toEqual('3')

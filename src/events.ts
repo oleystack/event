@@ -9,7 +9,7 @@ import { isDev, useIsomorphicLayoutEffect } from './common'
 /**
  * Types
  */
-type ContextListener<Value> = (payload: Readonly<Value>) => void
+type ContextListener<Value> = (value: Readonly<Value>) => void
 
 type EventKey = string | number | symbol
 
@@ -17,14 +17,14 @@ type EventMiddleware<In extends Readonly<unknown>[], Out> = (
   ...payload: In
 ) => Out
 
-type EventListener<Payload> = (payload: Payload) => void
+type EventListener<Payload> = (payload: Readonly<Payload>) => void
 
 type EventRegistry<
   Key extends EventKey,
   Event extends EventMiddleware<any, any>
 > = Record<Key, Event>
 
-type EventState = { type: EventKey; payload: any }
+type EventState = Readonly<{ type: EventKey; payloadArgs: any[] }>
 
 type EventDispatcher = (event: EventState) => void
 
@@ -54,16 +54,19 @@ export default function events<
   const contextListeners: ContextListener<EventState>[] = []
 
   /**
-   * Dispatcher
+   * Proxy Dispatcher for easier use
    * @param event
    * @param payload
    */
-  const dispatch = <Event extends keyof Registry>(
-    event: Event,
-    ...payload: Parameters<Registry[Event]>
-  ): void => {
-    dispatcher.current({ type: event, payload })
+  type Dispatcher = {
+    [key in keyof Registry]: (...payload: Parameters<Registry[key]>) => void
   }
+  const proxyDispatcher = new Proxy(dispatcher, {
+    get: ({ current: targetDispatcher }, type) => {
+      return (...payloadArgs: unknown[]) =>
+        targetDispatcher({ type, payloadArgs })
+    }
+  }) as unknown as Dispatcher
 
   /**
    * Informat
@@ -74,7 +77,9 @@ export default function events<
     eventListeners?: ListenerRegistry
   ) => ContextListener<EventState> =
     (eventListeners?: ListenerRegistry) => (event: EventState) => {
-      eventListeners?.[event.type]?.(middlewares[event.type](...event.payload))
+      eventListeners?.[event.type]?.(
+        middlewares[event.type](...event.payloadArgs)
+      )
     }
 
   /**
@@ -123,7 +128,7 @@ export default function events<
       }
     }, [contextListeners])
 
-    return dispatch
+    return proxyDispatcher
   }
 
   /**
@@ -144,5 +149,9 @@ export default function events<
     return { unsubscribe }
   }
 
-  return [BindProvider, useEvent, { subscribe, dispatch }] as const
+  return [
+    BindProvider,
+    useEvent,
+    { subscribe, dispatcher: proxyDispatcher }
+  ] as const
 }
