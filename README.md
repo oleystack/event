@@ -26,7 +26,7 @@ npm i @bit-about/event
 
 ## Usage
 
-1️⃣ Define your events set and their payloads
+1️⃣ Define *your events* by defining their payload middlewares
 ```jsx
 import { events } from '@bit-about/event'
 
@@ -37,7 +37,7 @@ const [EventProvider, useEvents] = events({
 })
 ```
 
-2️⃣ Wrap the tree with the EventProvider
+2️⃣ Wrap your components in EventProvider
 ```jsx
 const App = () => (
   <EventProvider>
@@ -60,7 +60,7 @@ const Button = () => {
 }
 ```
 
-👂 Listen on your events
+👂 Listen for your events
 ```jsx
 const Component = () => {
   const [message, setMessage] = React.useState('')
@@ -74,7 +74,7 @@ const Component = () => {
 ```
 
 ## Static access
-The third element of the `events()` result tuple is object which provides access in static manner (without hook). 
+The third result element of `events()` is object providing access in static manner (without hook). 
 
 ```jsx
 const [AppEventProvider, useAppEvents, { subscribe, dispatcher }] = events(...)
@@ -94,9 +94,9 @@ const subscriber = subscribe({
 subscriber.unsubscribe()
 ```
 
-## 👉 Rerendering
-Neither listeners nor event dispatching rerender the component.<br />
-The component will only be rerendered if its state is explicitly changed (in e.g. `React.useState`).
+## 👉 Re-render
+Neither listeners nor events dispatch your components render.<br />
+A component will only be rerendered if it's state is explicitly changed (in e.g. `React.useState`).
 
 ```jsx
 const Component = () => {
@@ -112,7 +112,7 @@ const Component = () => {
 ```
 
 ## Event Middlewares
-Events in `events()` are actually payload middlewares.
+Events in `events()` are payload middlewares. They can transform payload into another.
 
 ```jsx
 const [EventProvider, useEvents] = events({
@@ -130,13 +130,13 @@ avatarClicked()
 ```
 
 > NOTE: <br />
-> The library is completely type safe so Typescript will inform you when you use wrong payload anywhere
+> The library is full type-safe, so Typescript will inform you when you use wrong payload anywhere.
 
 ## BitAboutEvent 💛 [BitAboutState](https://github.com/bit-about/state)
-Are you tired of sending logic to the related components?<br />
-Move your bussiness logic to the hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
+Are you tired of sending logic to a related components?<br />
+Move your bussiness logic to hook-based state using `@bit-about/state` + `@bit-about/event`.<br />
 
-Now you've got **completely type-safe side-effects**, isn't cool?
+Now you've got **completely type-safe side-effects**. Isn't that cool?
 
 ```tsx
 import { state } from '@bit-about/state'
