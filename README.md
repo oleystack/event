@@ -30,7 +30,7 @@ npm i @bit-about/event
 ```jsx
 import { events } from '@bit-about/event'
 
-const [EventProvider, useEvent] = events({
+const [EventProvider, useEvents] = events({
   buttonClicked: (payload: string) => payload,
   userLogged: () => {},
   modalClosed: () => {},
@@ -50,9 +50,9 @@ const App = () => (
 
 ```jsx
 const Button = () => {
-  const dispatch = useEvent()
+  const { buttonClicked } = useEvents()
   
-  const onClick = () => dispatch('buttonClicked', 'Hello')
+  const onClick = () => buttonClicked('Hello')
   
   return <button onClick={onClick}>Call event</button>
 }
@@ -63,7 +63,7 @@ const Button = () => {
 const Component = () => {
   const [message, setMessage] = React.useState('')
 
-  useEvent({
+  useEvents({
     buttonClicked: (payload: string) => setMessage(payload)
   })
   
@@ -75,16 +75,16 @@ const Component = () => {
 The third element of the `events()` result tuple is object which provides access in static manner (without hook). 
 
 ```jsx
-const [AppEventProvider, useAppEvent, appEvent] = events(...)
+const [AppEventProvider, useAppEvents, { subscribe, dispatcher }] = events(...)
 ```
 
 and then
 ```jsx
 // 🗣️ Dispatch event
-appEvent.dispatch('buttonClicked', 'Hello Allice!')
+dispatcher.buttonClicked('Hello Allice!')
 
 // 👂 Subscribe and listen on new events
-const subscriber = appEvent.subscribe({
+const subscriber = subscribe({
   buttonClicked: (payload: string) => console.log(payload)
 })
   
@@ -100,7 +100,7 @@ The component will only be rerendered if its state is explicitly changed (in e.g
 const Component = () => {
   const [message, setMessage] = React.useState('')
 
-  useEvent({
+  useEvents({
     aliceClicked: () => console.log('I DO NOT rerender this component!'),
     bobClicked: () => setMessage('I DO rerender this component!')
   })
@@ -113,18 +113,18 @@ const Component = () => {
 Events in `events()` are actually payload middlewares.
 
 ```jsx
-const [EventProvider, useEvent] = events({
+const [EventProvider, useEvents] = events({
   buttonClicked: (payload: string) => `Hello ${message}!`, // Transforms string payload to another
   avatarClicked: () => `Bob!`, // Provides default payload
 })
 
-const dispatch = useEvent({
+const { buttonClicked, avatarClicked } = useEvents({
   buttonClicked: (payload: string) => console.log(payload), // "Hello Alice!",
   avatarClicked: (payload: string) => console.log(payload), // "Bob!"
 })
 
-dispatch('buttonClicked', 'Alice')
-dispatch('avatarClicked')
+buttonClicked('Alice')
+avatarClicked()
 ```
 
 > NOTE: <br />
@@ -138,14 +138,14 @@ Now you've got **completely type-safe side-effects**, isn't cool?
 
 ```tsx
 import { state } from '@bit-about/state'
-import { useEvent } from './auth-events' // Hook generated from events()
+import { useEvents } from './auth-events' // Hook generated from events()
 import User from '../models/user'
 
 const [UserProvider, useUser] = state(
   () => {
     const [user, setUser] = React.useState<User | null>(null)
     
-    useEvent({
+    useEvents({
       userLogged: (user: User) => setUser(user),
       userLoggout: () => setUser(null)
     })
