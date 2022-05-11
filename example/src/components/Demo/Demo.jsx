@@ -39,13 +39,13 @@ const RenderCounter = () => {
  * COMPONENT_1
  */
 function ComponentOne() {
-  const dispatch = useEvent()
+  const { lightSwitchPressed } = useEvent()
 
   return (
     <div className='container column'>
       <span className='container-title'>component_1</span>
       <RenderCounter />
-      <button className='button' onClick={() => dispatch('lightSwitchPressed')}>
+      <button className='button' onClick={() => lightSwitchPressed()}>
         Press <strong>light switch</strong>
       </button>
     </div>
