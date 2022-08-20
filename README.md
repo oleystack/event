@@ -16,7 +16,7 @@ npm i @bit-about/event
 <details>
   <summary>v1 -> v2</summary>
   
-  > Events dispatch approach has been changed. There is no longer a functions calling with their names in string.
+  > Events dispatch approach has been changed. There are no longer functions executed using their names in string.
   >
   > ✖️ old one:
   > ```jsx
