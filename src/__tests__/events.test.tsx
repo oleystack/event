@@ -281,3 +281,48 @@ test('Static usage', () => {
   expect(staticAliceListener).toBeCalledTimes(2)
   expect(staticBobListener).toBeCalledTimes(1) // should not changed
 })
+
+test('Fresh binding', () => {
+  const aliceListener = jest.fn()
+  const bobListener = jest.fn()
+
+  const [Provider, useEvents] = events({
+    onAlice: () => {},
+    onBob: () => {}
+  })
+
+  const Alice = () => {
+    const { onBob } = useEvents({
+      onAlice: aliceListener
+    })
+
+    React.useEffect(() => {
+      onBob()
+    }, [])
+
+    return <></>
+  }
+
+  const Bob = () => {
+    useEvents({
+      onBob: bobListener
+    })
+
+    return <></>
+  }
+
+  const App = () => (
+    <Provider>
+      <Alice />
+      <Bob />
+    </Provider>
+  )
+
+  expect(aliceListener).toBeCalledTimes(0)
+  expect(bobListener).toBeCalledTimes(0)
+
+  render(<App />)
+
+  expect(aliceListener).toBeCalledTimes(0)
+  expect(bobListener).toBeCalledTimes(1)
+})
