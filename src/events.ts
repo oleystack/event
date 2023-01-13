@@ -66,7 +66,9 @@ export default function events<
   /**
    * Provider
    */
-  const BindProvider: React.FC = (props) => {
+  const BindProvider: React.FC<{ children?: React.ReactNode | undefined }> = (
+    props
+  ) => {
     useIsomorphicLayoutEffect(() => {
       runWithPriority(NormalPriority, () => {
         // Informing listeners
